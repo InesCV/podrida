@@ -20,36 +20,27 @@
             <button id="startGame">Iniciar Juego</button>
         </div>
         <div id="scoreManager" class="hidden">
-          <h2>Juego en Curso</h2>
-          <div id="totalPointsContainer"></div>
-          <table id="scoreTable">
-            <tr>
-                <th>Jugador</th>
-                <th>Puntos</th>
-                <th>Acciones</th>
-            </tr>
-            <tr>
-                <td>Jugador 1</td>
-                <td id="points-0">0</td>
-                <td>
-                    <button onclick="updatePoints(0, 1)">+</button>
-                    <button onclick="updatePoints(0, -1)">-</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Jugador 2</td>
-                <td id="points-1">0</td>
-                <td>
-                    <button onclick="updatePoints(1, 1)">+</button>
-                    <button onclick="updatePoints(1, -1)">-</button>
-                </td>
-            </tr>
-        </table>
-        <div id="bazaManager">
-          <button id="prevBaza">Anterior Baza</button>
-          <button id="nextBaza">Siguiente Baza</button>
+            <h2>Juego en Curso</h2>
+            <table id="scoreTable">
+                <thead>
+                    <tr>
+                        <th>Ronda</th>
+                        <!-- Las columnas de los jugadores se llenarán dinámicamente -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Las filas de puntuaciones se llenarán dinámicamente -->
+                </tbody>
+            </table>
+            <div id="totalPointsContainer">
+                <h3>Total de Puntos</h3>
+                <ul id="listPlayerTotalPoints"></ul>
+            </div>
+            <div id="bazaManager">
+                <button id="prevBaza">Anterior Baza</button>
+                <button id="nextBaza" onclick="nextRound()">Siguiente Baza</button>
+            </div>
         </div>
-      </div>
     </div>
     <script src="script.js"></script>
 </body>
