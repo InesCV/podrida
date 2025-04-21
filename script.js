@@ -16,7 +16,10 @@ document.getElementById('startGame').addEventListener('click', function() {
   const bazaHistory = [];
 
   document.getElementById('playerNamesContainer').classList.add('hidden');
+  document.getElementById('numPlayersDefinition').classList.add('hidden');
   document.getElementById('gameContainer').classList.remove('hidden');
+  document.getElementById('scoreManager').classList.remove('hidden');
+
 
   const totalPointsContainer = document.getElementById('totalPointsContainer');
   totalPointsContainer.innerHTML = `<h3>Puntos Totales</h3><div class="listPlayerTotalPoints">${playerNames.map((name, index) => `<p class="playerTotalPoints"><span class="playerNameTotalPoints">${name}: </span><span id="points-${index}">0</span></p>`).join('')}</div>`;

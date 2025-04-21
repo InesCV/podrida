@@ -47,6 +47,10 @@ button:hover {
   background-color: #218838;
 }
 
+#numPlayers {
+  width: 25%;
+}
+
 .listPlayerTotalPoints {
   display: flex;
 }
