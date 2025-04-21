@@ -17,7 +17,6 @@
         <div id="playerNamesContainer" class="hidden">
             <h2>Nombres de Jugadores</h2>
             <div id="playerInputs"></div>
-            <button id="startGame">Iniciar Juego</button>
         </div>
         <div id="scoreManager" class="hidden">
             <h2>Juego en Curso</h2>
@@ -29,16 +28,33 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Las filas de puntuaciones se llenarán dinámicamente -->
+                    <tr id="totalRow">
+                        <td>Total</td>
+                        <!-- Los totales se llenarán dinámicamente -->
+                    </tr>
                 </tbody>
             </table>
+            <div id="handManager">
+                <h3>Puntos por Ronda</h3>
+                <table id="handTable">
+                    <thead>
+                        <tr>
+                            <th>Jugador</th>
+                            <th>Puntos Ronda</th>
+                            <th>Cumplido</th>
+                            <th>Bazas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Las filas de la tabla de bazas se llenarán dinámicamente -->
+                    </tbody>
+                </table>
+                <button id="prevHand">Anterior Baza</button>
+                <button id="nextHand" onclick="nextRound()">Siguiente Baza</button>
+            </div>
             <div id="totalPointsContainer">
                 <h3>Total de Puntos</h3>
                 <ul id="listPlayerTotalPoints"></ul>
-            </div>
-            <div id="bazaManager">
-                <button id="prevBaza">Anterior Baza</button>
-                <button id="nextBaza" onclick="nextRound()">Siguiente Baza</button>
             </div>
         </div>
     </div>

@@ -1,5 +1,6 @@
 let scores = {};
-let currentRound = 0;
+let currentRound = 1;
+let playerNames = [];
 
 // Función para establecer el número de jugadores
 document.getElementById('setPlayers').addEventListener('click', function() {
@@ -27,34 +28,72 @@ function setupPlayerInputs(numPlayers) {
     const startButton = document.createElement('button');
     startButton.innerText = 'Iniciar Juego';
     startButton.addEventListener('click', startGame);
+    console.log('Contador de juego preaparado');
     playerInputs.appendChild(startButton);
 }
 
 // Función para iniciar el juego
 function startGame() {
+    console.log('Contador de juego iniciado');
     const numPlayers = parseInt(document.getElementById('numPlayers').value);
-    const scoreTableHeader = document.querySelector('#scoreTable thead tr');
     const scoreTableBody = document.querySelector('#scoreTable tbody');
+    const handTableBody = document.querySelector('#handTable tbody');
     const totalPointsContainer = document.getElementById('listPlayerTotalPoints');
-    
+
     // Limpiar entradas anteriores
-    scoreTableHeader.innerHTML = '<th>Ronda</th>'; // Reiniciar encabezado
-    scoreTableBody.innerHTML = ''; // Limpiar cuerpo de la tabla
+    scoreTableBody.innerHTML = ''; // Limpiar cuerpo de la tabla de puntuaciones
+    handTableBody.innerHTML = ''; // Limpiar cuerpo de la tabla de bazas
     scores = {}; // Reiniciar puntajes
+    playerNames = []; // Reiniciar nombres de jugadores
 
     // Inicializar puntajes y encabezados de la tabla
     for (let i = 1; i <= numPlayers; i++) {
         const playerName = document.getElementById(`player-${i}`).value || `Jugador ${i}`;
+        playerNames.push(playerName);
         scores[playerName] = []; // Inicializar puntajes como un array
+
+        // Agregar encabezados a la tabla de puntuaciones
         const th = document.createElement('th');
         th.innerText = playerName;
-        scoreTableHeader.appendChild(th);
-        
+        document.querySelector('#scoreTable thead tr').appendChild(th);
+
         // Inicializar el total de puntos
         const totalPointsItem = document.createElement('li');
         totalPointsItem.id = `total-${playerName}`;
         totalPointsItem.innerText = `${playerName}: 0`;
         totalPointsContainer.appendChild(totalPointsItem);
+
+        // Agregar fila a la tabla de bazas
+        const row = document.createElement('tr');
+        const playerCell = document.createElement('td');
+        playerCell.innerText = playerName;
+        row.appendChild(playerCell);
+
+        const pointsCell = document.createElement('td');
+        const pointsInput = document.createElement('input');
+        pointsInput.type = 'number';
+        pointsInput.value = 0;
+        pointsCell.appendChild(pointsInput);
+        row.appendChild(pointsCell);
+
+        const fulfilledCell = document.createElement('td');
+        const fulfilledCheckbox = document.createElement('input');
+        fulfilledCheckbox.type = 'checkbox';
+        fulfilledCell.appendChild(fulfilledCheckbox);
+        row.appendChild(fulfilledCell);
+
+        const bazaCell = document.createElement('td');
+        const bazaPlusButton = document.createElement('button');
+        bazaPlusButton.innerText = '+';
+        bazaPlusButton.onclick = () => updateBazas(playerName, 1);
+        const bazaMinusButton = document.createElement('button');
+        bazaMinusButton.innerText = '-';
+        bazaMinusButton.onclick = () => updateBazas(playerName, -1);
+        bazaCell.appendChild(bazaPlusButton);
+        bazaCell.appendChild(bazaMinusButton);
+        row.appendChild(bazaCell);
+
+        handTableBody.appendChild(row);
     }
 
     // Iniciar la primera ronda
@@ -64,46 +103,78 @@ function startGame() {
     document.getElementById('scoreManager').classList.remove('hidden');
 }
 
-// Función para actualizar los puntos de un jugador en la ronda actual
-function updatePoints(playerIndex, points) {
-    const playerName = Object.keys(scores)[playerIndex];
-    if (!scores[playerName][currentRound]) {
-        scores[playerName][currentRound] = 0; // Inicializar si no existe
-    }
-    scores[playerName][currentRound] += points;
-    updateScoreTable();
+// Función para actualizar el número de bazas
+function updateBazas(playerName, change) {
+  const handTableBody = document.querySelector('#handTable tbody');
+  const rows = handTableBody.querySelectorAll('tr');
+
+  rows.forEach(row => {
+      const playerCell = row.querySelector('td:first-child');
+      if (playerCell.innerText === playerName) {
+          const bazaCountCell = row.querySelector('td:last-child');
+          const currentBazaCount = parseInt(bazaCountCell.dataset.count) || 0;
+          const newBazaCount = currentBazaCount + change;
+          bazaCountCell.dataset.count = newBazaCount;
+          bazaCountCell.innerText = newBazaCount;
+      }
+  });
 }
 
 // Función para actualizar la tabla de puntuaciones
 function updateScoreTable() {
-    const scoreTableBody = document.querySelector('#scoreTable tbody');
-    scoreTableBody.innerHTML = ''; // Limpiar el cuerpo de la tabla
+  const scoreTableBody = document.querySelector('#scoreTable tbody');
+  scoreTableBody.innerHTML = ''; // Limpiar el cuerpo de la tabla
 
-    for (let round = 0; round <= currentRound; round++) {
-        const row = document.createElement('tr');
-        const roundCell = document.createElement('td');
-        roundCell.innerText = `Ronda ${round + 1}`;
-        row.appendChild(roundCell);
+  // Agregar fila para la ronda actual
+  const roundRow = document.createElement('tr');
+  const roundCell = document.createElement('td');
+  roundCell.innerText = `Ronda ${currentRound + 1}`;
+  roundRow.appendChild(roundCell);
 
-        for (const player in scores) {
-            const cell = document.createElement('td');
-            cell.innerText = scores[player][round] || 0; // Mostrar 0 si no hay puntos
-            row.appendChild(cell);
-        }
-        scoreTableBody.appendChild(row);
-    }
+  playerNames.forEach(playerName => {
+      const pointsInput = document.querySelector(`#handTable tbody tr:has(td:first-child:contains('${playerName}')) input[type='number']`);
+      const fulfilledCheckbox = document.querySelector(`#handTable tbody tr:has(td:first-child:contains('${playerName}')) input[type='checkbox']`);
+      
+      let points = parseInt(pointsInput.value) || 0;
+      if (fulfilledCheckbox.checked) {
+          points += 10; // Sumar 10 puntos si se ha cumplido
+      }
+
+      const bazaCountCell = document.querySelector(`#handTable tbody tr:has(td:first-child:contains('${playerName}')) td:last-child`);
+      const bazaCount = parseInt(bazaCountCell.dataset.count) || 0;
+      points += bazaCount * 3; // Sumar 3 puntos por cada baza positiva
+      points -= (bazaCount < 0 ? Math.abs(bazaCount) * 3 : 0); // Restar 3 puntos por cada baza negativa
+
+      scores[playerName][currentRound] = points; // Guardar puntos en la ronda actual
+      const cell = document.createElement('td');
+      cell.innerText = points;
+      roundRow.appendChild(cell);
+  });
+
+  scoreTableBody.appendChild(roundRow);
+  updateTotalPoints();
+}
+
+// Función para actualizar el total de puntos de cada jugador
+function updateTotalPoints() {
+  const totalRow = document.getElementById('totalRow');
+  playerNames.forEach(playerName => {
+      const totalPoints = scores[playerName].reduce((acc, curr) => acc + (curr || 0), 0);
+      totalRow.innerHTML += `<td>${totalPoints}</td>`;
+      document.getElementById(`total-${playerName}`).innerText = `${playerName}: ${totalPoints}`;
+  });
 }
 
 // Función para iniciar una nueva baza
 function nextRound() {
-    currentRound++;
-    updateScoreTable(); // Actualiza la tabla al iniciar una nueva ronda
+  currentRound++;
+  updateScoreTable(); // Actualiza la tabla al iniciar una nueva ronda
 }
 
 // Función para manejar la anterior baza (opcional)
-document.getElementById('prevBaza').addEventListener('click', function() {
-    if (currentRound > 0) {
-        currentRound--;
-        updateScoreTable(); // Actualiza la tabla al retroceder una ronda
-    }
+document.getElementById('prevHand').addEventListener('click', function() {
+  if (currentRound > 0) {
+      currentRound--;
+      updateScoreTable(); // Actualiza la tabla al retroceder una ronda
+  }
 });
