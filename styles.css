@@ -46,3 +46,20 @@ button {
 button:hover {
   background-color: #218838;
 }
+
+.listPlayerTotalPoints {
+  display: flex;
+}
+
+.playerTotalPoints {
+  padding: 10px;
+  width: 100px; 
+  border: black 1px solid; 
+  margin: 2px;
+  border-radius: 5px;
+  flex-grow: 1;
+}
+
+.playerNameTotalPoints {
+  font-weight: bold;
+}

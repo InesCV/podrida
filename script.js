@@ -19,7 +19,7 @@ document.getElementById('startGame').addEventListener('click', function() {
   document.getElementById('gameContainer').classList.remove('hidden');
 
   const totalPointsContainer = document.getElementById('totalPointsContainer');
-  totalPointsContainer.innerHTML = `<h3>Puntos Totales</h3>${playerNames.map((name, index) => `<p>${name}: <span id="points-${index}">0</span></p>`).join('')}`;
+  totalPointsContainer.innerHTML = `<h3>Puntos Totales</h3><div class="listPlayerTotalPoints">${playerNames.map((name, index) => `<p class="playerTotalPoints"><span class="playerNameTotalPoints">${name}: </span><span id="points-${index}">0</span></p>`).join('')}</div>`;
 
   document.getElementById('addBaza').addEventListener('click', function() {
     const bazaPoints = parseInt(document.getElementById('bazaPoints').value);
