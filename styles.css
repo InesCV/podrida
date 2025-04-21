@@ -30,7 +30,6 @@ label {
 input {
   width: 50%;
   padding: 8px;
-  margin-bottom: 10px;
 }
 
 button {
@@ -53,6 +52,10 @@ button:hover {
 
 .listPlayerTotalPoints {
   display: flex;
+}
+
+.marginInput {
+  margin-bottom: 10px;
 }
 
 .playerTotalPoints {
@@ -86,4 +89,21 @@ th {
 
 #historyContainer h3 {
   margin: 0 0 10px;
+}
+
+input[type="checkbox"] {
+  height: 25px;
+}
+
+.bazaCell {
+  display: flex;
+}
+
+.bazaCell > input {
+  margin-right: 10px;
+}
+
+.bazaButton {
+  width: 50px;
+  margin: 0px 5px;
 }

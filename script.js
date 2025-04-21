@@ -1,5 +1,5 @@
 let scores = {};
-let currentRound = 1;
+let currentRound = 0;
 let playerNames = [];
 
 // Función para establecer el número de jugadores
@@ -20,6 +20,7 @@ function setupPlayerInputs(numPlayers) {
 
     for (let i = 1; i <= numPlayers; i++) {
         const input = document.createElement('input');
+        input.classList.add("marginInput")
         input.type = 'text';
         input.placeholder = `Nombre del Jugador ${i}`;
         input.id = `player-${i}`;
@@ -85,6 +86,7 @@ function startGame() {
       row.appendChild(fulfilledCell);
 
       const bazaCell = document.createElement('td');
+      bazaCell.classList.add("bazaCell");
       
       // Campo de entrada para el número de bazas
       const bazaInput = document.createElement('input');
@@ -97,6 +99,7 @@ function startGame() {
 
       // Botones para ajustar el número de bazas
       const bazaPlusButton = document.createElement('button');
+      bazaPlusButton.classList.add("bazaButton")
       bazaPlusButton.innerText = '+';
       bazaPlusButton.onclick = () => {
           bazaInput.value = parseInt(bazaInput.value) + 1; // Incrementar el valor
@@ -105,6 +108,7 @@ function startGame() {
 
       const bazaMinusButton = document.createElement('button');
       bazaMinusButton.innerText = '-';
+      bazaMinusButton.classList.add("bazaButton")
       bazaMinusButton.onclick = () => {
           bazaInput.value = parseInt(bazaInput.value) - 1; // Decrementar el valor
           updatePoints(row); // Actualizar puntos
@@ -117,22 +121,21 @@ function startGame() {
       handTableBody.appendChild(row);
   }
 
-  // Iniciar la primera ronda
-  currentRound = 0;
   updateScoreTable();
 }
 
 // Función para iniciar una nueva baza
-function nextRound() {
+function nextHand() {
   // Guardar la puntuación de la ronda actual en la tabla de puntuaciones
   const scoreTableBody = document.querySelector('#scoreTable tbody');
   const roundRow = document.createElement('tr');
   const roundCell = document.createElement('td');
-  roundCell.innerText = `Ronda ${currentRound + 1}`;
+  roundCell.innerText = `Ronda ${currentRound + 1}`; // Mostrar el número de ronda correctamente
   roundRow.appendChild(roundCell);
 
   playerNames.forEach(playerName => {
-      const points = scores[playerName][currentRound] || 0; // Obtener puntos de la ronda actual
+      const points = parseInt(document.querySelector(`tr:nth-child(${playerNames.indexOf(playerName) + 2}) .points-cell`).innerText) || 0; // Obtener puntos de la ronda actual
+      scores[playerName][currentRound] = points; // Guardar puntos en el objeto scores
       const cell = document.createElement('td');
       cell.innerText = points;
       roundRow.appendChild(cell);
