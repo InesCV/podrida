@@ -34,91 +34,121 @@ function setupPlayerInputs(numPlayers) {
 
 // Función para iniciar el juego
 function startGame() {
-    console.log('Contador de juego iniciado');
-    document.getElementById('numPlayersDefinition').classList.add('hidden');
-    document.getElementById('playerNamesContainer').classList.add('hidden');
-    document.getElementById('scoreManager').classList.remove('hidden');
-    const numPlayers = parseInt(document.getElementById('numPlayers').value);
-    const scoreTableBody = document.querySelector('#scoreTable tbody');
-    const handTableBody = document.querySelector('#handTable tbody');
-    const totalPointsContainer = document.getElementById('listPlayerTotalPoints');
+  console.log('Contador de juego iniciado');
+  document.getElementById('numPlayersDefinition').classList.add('hidden');
+  document.getElementById('playerNamesContainer').classList.add('hidden');
+  document.getElementById('scoreManager').classList.remove('hidden');
+  const numPlayers = parseInt(document.getElementById('numPlayers').value);
+  const scoreTableBody = document.querySelector('#scoreTable tbody');
+  const handTableBody = document.querySelector('#handTable tbody');
+  const totalPointsContainer = document.getElementById('listPlayerTotalPoints');
 
-    // Limpiar entradas anteriores
-    scoreTableBody.innerHTML = ''; // Limpiar cuerpo de la tabla de puntuaciones
-    handTableBody.innerHTML = ''; // Limpiar cuerpo de la tabla de bazas
-    scores = {}; // Reiniciar puntajes
-    playerNames = []; // Reiniciar nombres de jugadores
+  // Limpiar entradas anteriores
+  scoreTableBody.innerHTML = ''; // Limpiar cuerpo de la tabla de puntuaciones
+  handTableBody.innerHTML = ''; // Limpiar cuerpo de la tabla de bazas
+  scores = {}; // Reiniciar puntajes
+  playerNames = []; // Reiniciar nombres de jugadores
 
-    // Inicializar puntajes y encabezados de la tabla
-    for (let i = 1; i <= numPlayers; i++) {
-        const playerName = document.getElementById(`player-${i}`).value || `Jugador ${i}`;
-        playerNames.push(playerName);
-        scores[playerName] = []; // Inicializar puntajes como un array
+  // Inicializar puntajes y encabezados de la tabla
+  for (let i = 1; i <= numPlayers; i++) {
+      const playerName = document.getElementById(`player-${i}`).value || `Jugador ${i}`;
+      playerNames.push(playerName);
+      scores[playerName] = []; // Inicializar puntajes como un array
 
-        // Agregar encabezados a la tabla de puntuaciones
-        const th = document.createElement('th');
-        th.innerText = playerName;
-        document.querySelector('#scoreTable thead tr').appendChild(th);
+      // Agregar encabezados a la tabla de puntuaciones
+      const th = document.createElement('th');
+      th.innerText = playerName;
+      document.querySelector('#scoreTable thead tr').appendChild(th);
 
-        // Inicializar el total de puntos
-        const totalPointsItem = document.createElement('li');
-        totalPointsItem.id = `total-${playerName}`;
-        totalPointsItem.innerText = `${playerName}: 0`;
-        totalPointsContainer.appendChild(totalPointsItem);
+      // Inicializar el total de puntos
+      const totalPointsItem = document.createElement('li');
+      totalPointsItem.id = `total-${playerName}`;
+      totalPointsItem.innerText = `${playerName}: 0`;
+      totalPointsContainer.appendChild(totalPointsItem);
 
-        // Agregar fila a la tabla de bazas
-        const row = document.createElement('tr');
-        const playerCell = document.createElement('td');
-        playerCell.innerText = playerName;
-        row.appendChild(playerCell);
+      // Agregar fila a la tabla de bazas
+      const row = document.createElement('tr');
+      const playerCell = document.createElement('td');
+      playerCell.innerText = playerName;
+      row.appendChild(playerCell);
 
-        const pointsCell = document.createElement('td');
-        const pointsInput = document.createElement('input');
-        pointsInput.type = 'number';
-        pointsInput.value = 0;
-        pointsCell.appendChild(pointsInput);
-        row.appendChild(pointsCell);
+      const pointsCell = document.createElement('td');
+      pointsCell.innerText = 0; // Inicializar puntos en 0
+      pointsCell.classList.add('points-cell'); // Clase para facilitar la actualización
+      row.appendChild(pointsCell);
 
-        const fulfilledCell = document.createElement('td');
-        const fulfilledCheckbox = document.createElement('input');
-        fulfilledCheckbox.type = 'checkbox';
-        fulfilledCell.appendChild(fulfilledCheckbox);
-        row.appendChild(fulfilledCell);
+      const fulfilledCell = document.createElement('td');
+      const fulfilledCheckbox = document.createElement('input');
+      fulfilledCheckbox.type = 'checkbox';
+      fulfilledCheckbox.onchange = () => updatePoints(row); // Actualizar puntos al cambiar el checkbox
+      fulfilledCell.appendChild(fulfilledCheckbox);
+      row.appendChild(fulfilledCell);
 
-        const bazaCell = document.createElement('td');
-        const bazaPlusButton = document.createElement('button');
-        bazaPlusButton.innerText = '+';
-        bazaPlusButton.onclick = () => updateBazas(playerName, 1);
-        const bazaMinusButton = document.createElement('button');
-        bazaMinusButton.innerText = '-';
-        bazaMinusButton.onclick = () => updateBazas(playerName, -1);
-        bazaCell.appendChild(bazaPlusButton);
-        bazaCell.appendChild(bazaMinusButton);
-        row.appendChild(bazaCell);
+      const bazaCell = document.createElement('td');
+      
+      // Campo de entrada para el número de bazas
+      const bazaInput = document.createElement('input');
+      bazaInput.type = 'number';
+      bazaInput.value = 0; // Inicializar en 0
+      bazaInput.min = -10; // Ajustar según sea necesario
+      bazaInput.max = 10; // Ajustar según sea necesario
+      bazaInput.oninput = () => updatePoints(row); // Actualizar puntos al cambiar el valor
+      bazaCell.appendChild(bazaInput);
 
-        handTableBody.appendChild(row);
-    }
+      // Botones para ajustar el número de bazas
+      const bazaPlusButton = document.createElement('button');
+      bazaPlusButton.innerText = '+';
+      bazaPlusButton.onclick = () => {
+          bazaInput.value = parseInt(bazaInput.value) + 1; // Incrementar el valor
+          updatePoints(row); // Actualizar puntos
+      };
 
-    // Iniciar la primera ronda
-    currentRound = 0;
-    updateScoreTable();
+      const bazaMinusButton = document.createElement('button');
+      bazaMinusButton.innerText = '-';
+      bazaMinusButton.onclick = () => {
+          bazaInput.value = parseInt(bazaInput.value) - 1; // Decrementar el valor
+          updatePoints(row); // Actualizar puntos
+      };
+
+      bazaCell.appendChild(bazaPlusButton);
+      bazaCell.appendChild(bazaMinusButton);
+      row.appendChild(bazaCell);
+
+      handTableBody.appendChild(row);
+  }
+
+  // Iniciar la primera ronda
+  currentRound = 0;
+  updateScoreTable();
+}
+
+// Función para actualizar los puntos
+function updatePoints(row) {
+  const pointsCell = row.querySelector('.points-cell');
+  const fulfilledCheckbox = row.querySelector('input[type="checkbox"]');
+  const bazaInput = row.querySelector('input[type="number"]');
+  const bazaCount = parseInt(bazaInput.value) || 0; // Obtener el valor del input
+
+  let points = 0;
+  if (fulfilledCheckbox.checked) {
+      points += 10; // Sumar 10 puntos si se ha cumplido
+  }
+  points += bazaCount * 3; // Sumar 3 puntos por cada baza positiva
+  points -= (bazaCount < 0 ? Math.abs(bazaCount) * 3 : 0); // Restar 3 puntos por cada baza negativa
+
+  pointsCell.innerText = points; // Actualizar la celda de puntos
 }
 
 // Función para actualizar el número de bazas
-function updateBazas(playerName, change) {
-    const handTableBody = document.querySelector('#handTable tbody');
-    const rows = handTableBody.querySelectorAll('tr');
+function updateBazas(playerName, change, row) {
+  const handTableBody = document.querySelector('#handTable tbody');
+  const bazaCountCell = row.querySelector('td:last-child');
+  const currentBazaCount = parseInt(bazaCountCell.dataset.count) || 0;
+  const newBazaCount = currentBazaCount + change;
+  bazaCountCell.dataset.count = newBazaCount;
+  bazaCountCell.innerText = newBazaCount;
 
-    rows.forEach(row => {
-        const playerCell = row.querySelector('td:first-child');
-        if (playerCell.innerText === playerName) {
-            const bazaCountCell = row.querySelector('td:last-child');
-            const currentBazaCount = parseInt(bazaCountCell.dataset.count) || 0;
-            const newBazaCount = currentBazaCount + change;
-            bazaCountCell.dataset.count = newBazaCount;
-            bazaCountCell.innerText = newBazaCount;
-        }
-    });
+  updatePoints(row); // Actualizar puntos después de cambiar las bazas
 }
 
 // Función para actualizar la tabla de puntuaciones
