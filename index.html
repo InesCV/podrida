@@ -33,6 +33,29 @@
                 <input type="number" id="bazas" value="0">
             </div>
         </div>
+        <table id="scoreTable">
+          <tr>
+              <th>Jugador</th>
+              <th>Puntos</th>
+              <th>Acciones</th>
+          </tr>
+          <tr>
+              <td>Jugador 1</td>
+              <td id="points-0">0</td>
+              <td>
+                  <button onclick="updatePoints(0, 1)">+</button>
+                  <button onclick="updatePoints(0, -1)">-</button>
+              </td>
+          </tr>
+          <tr>
+              <td>Jugador 2</td>
+              <td id="points-1">0</td>
+              <td>
+                  <button onclick="updatePoints(1, 1)">+</button>
+                  <button onclick="updatePoints(1, -1)">-</button>
+              </td>
+          </tr>
+      </table>
     </div>
     <script src="script.js"></script>
 </body>

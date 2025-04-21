@@ -41,3 +41,19 @@ document.getElementById('startGame').addEventListener('click', function() {
     }
 });
 });
+
+let totalPoints = [0, 0]; // Array para almacenar puntos de cada jugador
+
+function updatePoints(playerIndex, operation) {
+    const basePoints = 10; // Puntos iniciales por cumplir la baza
+    const additionalPoints = 3; // Puntos por cada baza adicional
+
+    if (operation === 1) {
+        totalPoints[playerIndex] += (totalPoints[playerIndex] === 0) ? basePoints : additionalPoints;
+    } else if (operation === -1) {
+        totalPoints[playerIndex] -= additionalPoints;
+    }
+
+    // Actualiza la visualización de puntos
+    document.getElementById(`points-${playerIndex}`).innerText = totalPoints[playerIndex];
+}
