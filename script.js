@@ -17,32 +17,11 @@ document.getElementById('startGame').addEventListener('click', function() {
 
   document.getElementById('playerNamesContainer').classList.add('hidden');
   document.getElementById('numPlayersDefinition').classList.add('hidden');
-  document.getElementById('gameContainer').classList.remove('hidden');
   document.getElementById('scoreManager').classList.remove('hidden');
 
 
   const totalPointsContainer = document.getElementById('totalPointsContainer');
   totalPointsContainer.innerHTML = `<h3>Puntos Totales</h3><div class="listPlayerTotalPoints">${playerNames.map((name, index) => `<p class="playerTotalPoints"><span class="playerNameTotalPoints">${name}: </span><span id="points-${index}">0</span></p>`).join('')}</div>`;
-
-  document.getElementById('addBaza').addEventListener('click', function() {
-    const bazaPoints = parseInt(document.getElementById('bazaPoints').value);
-    const numBazas = parseInt(document.getElementById('bazas').value);
-    
-    if (!isNaN(bazaPoints) && !isNaN(numBazas)) {
-        bazaHistory.push(bazaPoints);
-        const playerIndex = bazaHistory.length % totalPoints.length;
-        totalPoints[playerIndex] += bazaPoints;
-
-        // Update the displayed points for each player
-        totalPoints.forEach((points, index) => {
-            document.getElementById(`points-${index}`).innerText = points;
-        });
-
-        // Clear the input fields
-        document.getElementById('bazaPoints').value = 0;
-        document.getElementById('bazas').value = 0;
-    }
-});
 });
 
 let totalPoints = [0, 0]; // Array para almacenar puntos de cada jugador
