@@ -21,4 +21,23 @@ document.getElementById('startGame').addEventListener('click', function() {
   const totalPointsContainer = document.getElementById('totalPointsContainer');
   totalPointsContainer.innerHTML = `<h3>Puntos Totales</h3>${playerNames.map((name, index) => `<p>${name}: <span id="points-${index}">0</span></p>`).join('')}`;
 
-  document.getElementById('addB
+  document.getElementById('addBaza').addEventListener('click', function() {
+    const bazaPoints = parseInt(document.getElementById('bazaPoints').value);
+    const numBazas = parseInt(document.getElementById('bazas').value);
+    
+    if (!isNaN(bazaPoints) && !isNaN(numBazas)) {
+        bazaHistory.push(bazaPoints);
+        const playerIndex = bazaHistory.length % totalPoints.length;
+        totalPoints[playerIndex] += bazaPoints;
+
+        // Update the displayed points for each player
+        totalPoints.forEach((points, index) => {
+            document.getElementById(`points-${index}`).innerText = points;
+        });
+
+        // Clear the input fields
+        document.getElementById('bazaPoints').value = 0;
+        document.getElementById('bazas').value = 0;
+    }
+});
+});
