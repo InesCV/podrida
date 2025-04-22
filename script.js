@@ -13,6 +13,11 @@ document.getElementById('setPlayers').addEventListener('click', function() {
     }
 });
 
+function transformPlayerNameToId(playerName) {
+  playerId = playerName.split(" ").join("-").toLowerCase(); // create kebab-case
+  return playerId
+}
+
 // Función para configurar los inputs de los nombres de los jugadores
 function setupPlayerInputs(numPlayers) {
     const playerInputs = document.getElementById('playerInputs');
@@ -20,7 +25,7 @@ function setupPlayerInputs(numPlayers) {
 
     for (let i = 1; i <= numPlayers; i++) {
         const input = document.createElement('input');
-        input.classList.add("marginInput")
+        input.classList.add("mb-10")
         input.type = 'text';
         input.placeholder = `Nombre del Jugador ${i}`;
         input.id = `player-${i}`;
@@ -28,21 +33,21 @@ function setupPlayerInputs(numPlayers) {
     }
     const startButton = document.createElement('button');
     startButton.innerText = 'Iniciar Juego';
+    startButton.classList.add('stepButton')
     startButton.addEventListener('click', startGame);
-    console.log('Contador de juego preaparado');
     playerInputs.appendChild(startButton);
 }
 
 // Función para iniciar el juego
 function startGame() {
-  console.log('Contador de juego iniciado');
   document.getElementById('numPlayersDefinition').classList.add('hidden');
   document.getElementById('playerNamesContainer').classList.add('hidden');
   document.getElementById('scoreManager').classList.remove('hidden');
   const numPlayers = parseInt(document.getElementById('numPlayers').value);
   const scoreTableBody = document.querySelector('#scoreTable tbody');
   const handTableBody = document.querySelector('#handTable tbody');
-  const totalPointsContainer = document.getElementById('listPlayerTotalPoints');
+  const roundTitle = document.getElementById('round-title');
+  roundTitle.innerText = `Puntos de Ronda ${currentRound + 1}`;
 
   // Limpiar entradas anteriores
   scoreTableBody.innerHTML = ''; // Limpiar cuerpo de la tabla de puntuaciones
@@ -53,75 +58,85 @@ function startGame() {
   // Inicializar puntajes y encabezados de la tabla
   for (let i = 1; i <= numPlayers; i++) {
       const playerName = document.getElementById(`player-${i}`).value || `Jugador ${i}`;
+      const playerId = transformPlayerNameToId(playerName);
       playerNames.push(playerName);
       scores[playerName] = []; // Inicializar puntajes como un array
 
-      // Agregar encabezados a la tabla de puntuaciones
-      const th = document.createElement('th');
-      th.innerText = playerName;
-      document.querySelector('#scoreTable thead tr').appendChild(th);
-
-      // Inicializar el total de puntos
-      const totalPointsItem = document.createElement('li');
-      totalPointsItem.id = `total-${playerName}`;
-      totalPointsItem.innerText = `${playerName}: 0`;
-      totalPointsContainer.appendChild(totalPointsItem);
-
-      // Agregar fila a la tabla de bazas
-      const row = document.createElement('tr');
-      const playerCell = document.createElement('td');
-      playerCell.innerText = playerName;
-      row.appendChild(playerCell);
-
-      const pointsCell = document.createElement('td');
-      pointsCell.innerText = 0; // Inicializar puntos en 0
-      pointsCell.classList.add('points-cell'); // Clase para facilitar la actualización
-      row.appendChild(pointsCell);
-
-      const fulfilledCell = document.createElement('td');
-      const fulfilledCheckbox = document.createElement('input');
-      fulfilledCheckbox.type = 'checkbox';
-      fulfilledCheckbox.onchange = () => updatePoints(row); // Actualizar puntos al cambiar el checkbox
-      fulfilledCell.appendChild(fulfilledCheckbox);
-      row.appendChild(fulfilledCell);
-
-      const bazaCell = document.createElement('td');
-      bazaCell.classList.add("bazaCell");
-      
-      // Campo de entrada para el número de bazas
-      const bazaInput = document.createElement('input');
-      bazaInput.type = 'number';
-      bazaInput.value = 0; // Inicializar en 0
-      bazaInput.min = -10; // Ajustar según sea necesario
-      bazaInput.max = 10; // Ajustar según sea necesario
-      bazaInput.oninput = () => updatePoints(row); // Actualizar puntos al cambiar el valor
-      bazaCell.appendChild(bazaInput);
-
-      // Botones para ajustar el número de bazas
-      const bazaPlusButton = document.createElement('button');
-      bazaPlusButton.classList.add("bazaButton")
-      bazaPlusButton.innerText = '+';
-      bazaPlusButton.onclick = () => {
-          bazaInput.value = parseInt(bazaInput.value) + 1; // Incrementar el valor
-          updatePoints(row); // Actualizar puntos
-      };
-
-      const bazaMinusButton = document.createElement('button');
-      bazaMinusButton.innerText = '-';
-      bazaMinusButton.classList.add("bazaButton")
-      bazaMinusButton.onclick = () => {
-          bazaInput.value = parseInt(bazaInput.value) - 1; // Decrementar el valor
-          updatePoints(row); // Actualizar puntos
-      };
-
-      bazaCell.appendChild(bazaPlusButton);
-      bazaCell.appendChild(bazaMinusButton);
-      row.appendChild(bazaCell);
-
-      handTableBody.appendChild(row);
+      startScoreTable(playerName, playerId);
+      startHandTable(playerName, playerId, handTableBody);
   }
+}
 
-  updateScoreTable();
+function startScoreTable(playerName, playerId) {
+  // Agregar encabezados a la tabla de puntuaciones
+  const totalPointsRow = document.getElementById('totalRow');
+  const th = document.createElement('th');
+  th.innerText = playerName;
+  document.querySelector('#scoreTable thead tr').appendChild(th);
+
+  // Inicializar el total de puntos
+  const totalPointsItem = document.createElement('td');
+  totalPointsItem.id = `total-${playerId}`;
+  totalPointsItem.innerText = 0; // Al inicio todos los jugadores tienen un total de 0 puntos
+  totalPointsRow.appendChild(totalPointsItem);
+}
+
+// Función para crear la tabla de Bazas
+function startHandTable(playerName, playerId, handTableBody) {  
+  // Agregar fila a la tabla de bazas
+  const row = document.createElement('tr');
+  const playerCell = document.createElement('td');
+  playerCell.innerText = playerName;
+  row.appendChild(playerCell);
+
+  const pointsCell = document.createElement('td');
+  pointsCell.innerText = 0; // Inicializar puntos en 0
+  pointsCell.classList.add('pointsCell'); // Clase para facilitar la actualización
+  pointsCell.id = `current-round-${playerId}`; // Asignar ID a los puntos por jugador de la mano
+  row.appendChild(pointsCell);
+
+  const fulfilledCell = document.createElement('td');
+  fulfilledCell.classList.add('checkboxCell')
+  const fulfilledCheckbox = document.createElement('input');
+  fulfilledCheckbox.type = 'checkbox';
+  fulfilledCheckbox.onchange = () => updatePoints(row); // Actualizar puntos al cambiar el checkbox
+  fulfilledCell.appendChild(fulfilledCheckbox);
+  row.appendChild(fulfilledCell);
+
+  const bazaCell = document.createElement('td');
+  bazaCell.classList.add("bazaCell");
+  
+  // Campo de entrada para el número de bazas
+  const bazaInput = document.createElement('input');
+  bazaInput.type = 'number';
+  bazaInput.value = 0; // Inicializar en 0
+  bazaInput.min = -13; // Ajustar según sea necesario
+  bazaInput.max = 13; // Ajustar según sea necesario
+  bazaInput.oninput = () => updatePoints(row); // Actualizar puntos al cambiar el valor
+  bazaCell.appendChild(bazaInput);
+
+  // Botones para ajustar el número de bazas
+  const bazaPlusButton = document.createElement('button');
+  bazaPlusButton.classList.add("bazaButton")
+  bazaPlusButton.innerText = '+';
+  bazaPlusButton.onclick = () => {
+      bazaInput.value = parseInt(bazaInput.value) + 1; // Incrementar el valor
+      updatePoints(row); // Actualizar puntos
+  };
+
+  const bazaMinusButton = document.createElement('button');
+  bazaMinusButton.innerText = '-';
+  bazaMinusButton.classList.add("bazaButton")
+  bazaMinusButton.onclick = () => {
+      bazaInput.value = parseInt(bazaInput.value) - 1; // Decrementar el valor
+      updatePoints(row); // Actualizar puntos
+  };
+
+  bazaCell.appendChild(bazaMinusButton);
+  bazaCell.appendChild(bazaPlusButton);
+  row.appendChild(bazaCell);
+
+  handTableBody.appendChild(row);
 }
 
 // Función para iniciar una nueva baza
@@ -134,7 +149,10 @@ function nextHand() {
   roundRow.appendChild(roundCell);
 
   playerNames.forEach(playerName => {
-      const points = parseInt(document.querySelector(`tr:nth-child(${playerNames.indexOf(playerName) + 2}) .points-cell`).innerText) || 0; // Obtener puntos de la ronda actual
+      const playerId = transformPlayerNameToId(playerName);
+      const currentRoundPlayerId = `current-round-${playerId}`;
+      console.log(currentRoundPlayerId);
+      const points = document.getElementById(currentRoundPlayerId).innerText || 0; // Obtener puntos de la ronda actual
       scores[playerName][currentRound] = points; // Guardar puntos en el objeto scores
       const cell = document.createElement('td');
       cell.innerText = points;
@@ -144,7 +162,7 @@ function nextHand() {
   scoreTableBody.appendChild(roundRow); // Agregar la fila de la ronda actual
 
   // Actualizar la fila de totales
-  updateTotalPoints();
+  updateTotalPointsRow();
 
   // Limpiar el handTable para la nueva ronda
   const handTableBody = document.querySelector('#handTable tbody');
@@ -152,12 +170,11 @@ function nextHand() {
 
   // Incrementar la ronda actual
   currentRound++;
-  updateScoreTable(); // Actualizar la tabla de puntuaciones
 }
 
 // Función para actualizar los puntos
 function updatePoints(row) {
-  const pointsCell = row.querySelector('.points-cell');
+  const pointsCell = row.querySelector('.pointsCell');
   const fulfilledCheckbox = row.querySelector('input[type="checkbox"]');
   const bazaInput = row.querySelector('input[type="number"]');
   const bazaCount = parseInt(bazaInput.value) || 0; // Obtener el valor del input
@@ -166,19 +183,43 @@ function updatePoints(row) {
   if (fulfilledCheckbox.checked) {
       points += 10; // Sumar 10 puntos si se ha cumplido
   }
-  points += bazaCount * 3; // Sumar 3 puntos por cada baza positiva
-  points -= (bazaCount < 0 ? Math.abs(bazaCount) * 3 : 0); // Restar 3 puntos por cada baza negativa
-
+  points += bazaCount * 3; // Sumar 3 puntos positivos o negativos por cada baza
   pointsCell.innerText = points; // Actualizar la celda de puntos
+
+  // Actualizar el total en la celda correspondiente
+  const playerName = row.querySelector('td').id; // Suponiendo que el primer <td> es el nombre del jugador
+  const playerId = transformPlayerNameToId(playerName);
+  const totalPointsCell = document.getElementById(`current-round-${playerId}`);
+  if (totalPointsCell) {
+      totalPointsCell.innerText = points; // Actualizar el total de puntos
+  }
 }
 
-// Función para actualizar el total de puntos de cada jugador
-function updateTotalPoints() {
+// Función para crear la fila de totales
+function createTotalPointsRow() {
   const totalRow = document.getElementById('totalRow');
-  totalRow.innerHTML = ''; // Limpiar la fila de totales
-  playerNames.forEach(playerName => {
-      const totalPoints = scores[playerName].reduce((acc, curr) => acc + (curr || 0), 0);
-      totalRow.innerHTML += `<td>${totalPoints}</td>`;
-      document.getElementById(`total-${playerName}`).innerText = `${playerName}: ${totalPoints}`;
+
+  // Agregar celda para el encabezado "Total"
+  const totalHeaderCell = document.createElement('td');
+  totalHeaderCell.innerText = 'Total';
+  totalRow.appendChild(totalHeaderCell);
+
+  playerNames.forEach((playerName, index) => {
+      const totalCell = document.createElement('td');
+      totalCell.id = `total-player-${index + 1}`; // Asignar ID a cada celda de total
+      totalCell.innerText = 0; // Inicializar en 0
+      totalRow.appendChild(totalCell);
+  });
+}
+
+// Función para actualizar la fila de totales
+function updateTotalPointsRow(roundId) {
+  playerNames.forEach((playerName, index) => {
+      const pointsForRound = scores[playerName][roundId] || 0; // Obtener puntos de la ronda actual
+      const totalCell = document.getElementById(`total-player-${index + 1}`);
+      const currentTotal = parseInt(totalCell.innerText) || 0; // Obtener el total actual
+
+      // Actualizar el total sumando los puntos de la ronda actual
+      totalCell.innerText = currentTotal + pointsForRound;
   });
 }

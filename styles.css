@@ -42,6 +42,19 @@ button {
   cursor: pointer;
 }
 
+.stepButton {
+  margin: 20px 0 10px;
+}
+
+#handStep {
+  display: flex;
+}
+
+#handStep > button {
+  margin: 20px 10px 10px;
+}
+
+
 button:hover {
   background-color: #72a8e1;
 }
@@ -54,7 +67,7 @@ button:hover {
   display: flex;
 }
 
-.marginInput {
+.mb-10 {
   margin-bottom: 10px;
 }
 
@@ -87,12 +100,17 @@ th {
   background-color: #f2f2f2;
 }
 
+tr#totalRow {
+  font-weight: bold;
+}
+
 #historyContainer h3 {
   margin: 0 0 10px;
 }
 
 input[type="checkbox"] {
   height: 25px;
+  accent-color: green;
 }
 
 .bazaCell {

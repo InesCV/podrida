@@ -12,8 +12,8 @@
         <h1>La Podrida - Contador</h1>
         <div id="numPlayersDefinition">
             <label for="numPlayers">Número de Jugadores (3-6):</label>
-            <input type="number" id="numPlayers" class="marginInput"" min="3" max="6" value="3">
-            <button id="setPlayers">Establecer Jugadores</button>
+            <input type="number" id="numPlayers" min="3" max="6" value="3">
+            <button id="setPlayers" class="stepButton">Establecer Jugadores</button>
         </div>
         <div id="playerNamesContainer" class="hidden">
             <h2>Nombres de Jugadores</h2>
@@ -27,16 +27,16 @@
                         <th>Ronda</th>
                         <!-- Las columnas de los jugadores se llenarán dinámicamente -->
                     </tr>
+                    <tr id="totalRow">
+                      <td>Total</td>
+                      <!-- Los totales se llenarán dinámicamente -->
+                  </tr>
                 </thead>
                 <tbody>
-                    <tr id="totalRow">
-                        <td>Total</td>
-                        <!-- Los totales se llenarán dinámicamente -->
-                    </tr>
                 </tbody>
             </table>
             <div id="handManager">
-              <h3>Puntos por Ronda</h3>
+              <h3 id="round-title">Puntos por Ronda</h3>
               <table id="handTable">
                   <thead>
                       <tr>
@@ -50,8 +50,10 @@
                       <!-- Las filas se agregarán dinámicamente -->
                   </tbody>
               </table>
-              <button id="prevHand">Anterior Mano</button>
-              <button id="nextHand" onclick="nextHand()">Siguiente Mano</button>
+              <div id="handStep">
+                <button id="prevHand" class="stepButton">Anterior Mano</button>
+                <button id="nextHand" class="stepButton" onclick="nextHand()">Siguiente Mano</button>
+              </div>
             </div>
             <div id="totalPointsContainer">
                 <h3>Total de Puntos</h3>
