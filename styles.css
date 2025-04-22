@@ -3,6 +3,12 @@ body {
   background-color: #f4f4f4;
 }
 
+.copyright {
+  text-align: center;
+  font-size: small;
+  color: grey;
+}
+
 .container {
   max-width: 600px;
   margin: auto;
