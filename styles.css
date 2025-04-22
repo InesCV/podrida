@@ -1,7 +1,6 @@
 body {
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
-  margin: 0;
 }
 
 .container {
@@ -41,6 +40,10 @@ button {
   cursor: pointer;
 }
 
+#numPlayers {
+  margin-top: 10px;
+}
+
 .stepButton {
   margin: 20px 0 10px;
 }
@@ -58,8 +61,12 @@ button:hover {
   background-color: #72a8e1;
 }
 
-#numPlayers {
-  width: 25%;
+#numPlayersDefinition {
+  text-align: center;
+}
+
+#playerInputs {
+  text-align: center;
 }
 
 .mb-10 {
@@ -124,9 +131,13 @@ input[type="checkbox"] {
     margin-right: 10px;
   }
 
-  .body {
+  body {
     padding: 20px;
   }
+
+  #numPlayers {
+    width: 50%;
+  }  
 
   .bazaButtons {
     display: flex;
@@ -135,7 +146,16 @@ input[type="checkbox"] {
 
 /* Mobile only */
 @media only screen and (max-width: 600px) {
-  .body {
+  body {
+    padding: 5px;
+    margin: 5px 0;
+  }
+
+  #numPlayers {
+    width: 80%;
+  }
+
+  th, td {
     padding: 5px;
   }
 
@@ -152,10 +172,15 @@ input[type="checkbox"] {
 
   .bazaButton {
     width: 60px;
+    height: 45px;
     margin: 5px;
   }
 
   .bazaCell > input {
     margin-bottom: 5px;
+  }
+
+  .stepButton {
+    padding: 15px;
   }
 }
