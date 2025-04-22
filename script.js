@@ -133,7 +133,7 @@ function startHandTable(playerName, playerId, handTableBody) {
     bazaInput.value = parseInt(bazaInput.value) - 1; // Decrementar el valor
     updatePoints(row); // Actualizar puntos
   };
-  
+
   bazaButtons.appendChild(bazaMinusButton);
   bazaButtons.appendChild(bazaPlusButton);
   bazaCell.appendChild(bazaButtons);
@@ -180,6 +180,9 @@ function nextHand() {
   
   // Incrementar la ronda actual
   currentRound++;
+  // Mostrar puntos de la nueva ronda
+  const roundTitle = document.getElementById('round-title');
+  roundTitle.innerText = `Puntos de Ronda ${currentRound + 1}`;
 }
 
 // Función para actualizar los puntos
