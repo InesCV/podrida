@@ -63,10 +63,6 @@ button:hover {
   width: 25%;
 }
 
-.listPlayerTotalPoints {
-  display: flex;
-}
-
 .mb-10 {
   margin-bottom: 10px;
 }
@@ -97,11 +93,12 @@ th, td {
 }
 
 th {
-  background-color: #f2f2f2;
+  background-color: #72a8e150;
 }
 
 tr#totalRow {
   font-weight: bold;
+  background-color: #f2f2f2;
 }
 
 #historyContainer h3 {

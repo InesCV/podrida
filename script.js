@@ -151,23 +151,30 @@ function nextHand() {
   playerNames.forEach(playerName => {
       const playerId = transformPlayerNameToId(playerName);
       const currentRoundPlayerId = `current-round-${playerId}`;
-      console.log(currentRoundPlayerId);
       const points = document.getElementById(currentRoundPlayerId).innerText || 0; // Obtener puntos de la ronda actual
       scores[playerName][currentRound] = points; // Guardar puntos en el objeto scores
       const cell = document.createElement('td');
       cell.innerText = points;
+      cell.id = `round-${currentRound + 1}-${playerId}`;
       roundRow.appendChild(cell);
   });
 
   scoreTableBody.appendChild(roundRow); // Agregar la fila de la ronda actual
 
   // Actualizar la fila de totales
-  updateTotalPointsRow();
+  updateTotalPointsRow(currentRound);
 
   // Limpiar el handTable para la nueva ronda
   const handTableBody = document.querySelector('#handTable tbody');
   handTableBody.innerHTML = ''; // Limpiar la tabla de bazas
 
+  // Inicializar tabla de mano
+  playerNames.forEach(playerName => {
+    const handTableBody = document.querySelector('#handTable tbody');
+    const playerId = transformPlayerNameToId(playerName);
+    startHandTable(playerName, playerId, handTableBody);
+  });
+  
   // Incrementar la ronda actual
   currentRound++;
 }
@@ -215,11 +222,12 @@ function createTotalPointsRow() {
 // Función para actualizar la fila de totales
 function updateTotalPointsRow(roundId) {
   playerNames.forEach((playerName, index) => {
+      const playerId = transformPlayerNameToId(playerName);
       const pointsForRound = scores[playerName][roundId] || 0; // Obtener puntos de la ronda actual
-      const totalCell = document.getElementById(`total-player-${index + 1}`);
-      const currentTotal = parseInt(totalCell.innerText) || 0; // Obtener el total actual
+      const totalCell = document.getElementById(`total-${playerId}`);
+      const currentTotal = totalCell.innerText || 0; // Obtener el total actual
 
       // Actualizar el total sumando los puntos de la ronda actual
-      totalCell.innerText = currentTotal + pointsForRound;
+      totalCell.innerText = parseInt(currentTotal) + parseInt(pointsForRound);
   });
 }
