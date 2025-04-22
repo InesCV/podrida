@@ -116,6 +116,8 @@ function startHandTable(playerName, playerId, handTableBody) {
   bazaCell.appendChild(bazaInput);
 
   // Botones para ajustar el número de bazas
+  const bazaButtons = document.createElement('div');
+  bazaButtons.classList.add('bazaButtons');
   const bazaPlusButton = document.createElement('button');
   bazaPlusButton.classList.add("bazaButton")
   bazaPlusButton.innerText = '+';
@@ -123,17 +125,18 @@ function startHandTable(playerName, playerId, handTableBody) {
       bazaInput.value = parseInt(bazaInput.value) + 1; // Incrementar el valor
       updatePoints(row); // Actualizar puntos
   };
-
+  
   const bazaMinusButton = document.createElement('button');
   bazaMinusButton.innerText = '-';
   bazaMinusButton.classList.add("bazaButton")
   bazaMinusButton.onclick = () => {
-      bazaInput.value = parseInt(bazaInput.value) - 1; // Decrementar el valor
-      updatePoints(row); // Actualizar puntos
+    bazaInput.value = parseInt(bazaInput.value) - 1; // Decrementar el valor
+    updatePoints(row); // Actualizar puntos
   };
-
-  bazaCell.appendChild(bazaMinusButton);
-  bazaCell.appendChild(bazaPlusButton);
+  
+  bazaButtons.appendChild(bazaMinusButton);
+  bazaButtons.appendChild(bazaPlusButton);
+  bazaCell.appendChild(bazaButtons);
   row.appendChild(bazaCell);
 
   handTableBody.appendChild(row);

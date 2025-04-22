@@ -2,7 +2,6 @@ body {
   font-family: Arial, sans-serif;
   background-color: #f4f4f4;
   margin: 0;
-  padding: 20px;
 }
 
 .container {
@@ -114,11 +113,49 @@ input[type="checkbox"] {
   display: flex;
 }
 
-.bazaCell > input {
-  margin-right: 10px;
-}
-
 .bazaButton {
   width: 50px;
   margin: 0px 5px;
+}
+
+/* Desktop only */
+@media only screen and (min-width: 600px) {
+  .bazaCell > input {
+    margin-right: 10px;
+  }
+
+  .body {
+    padding: 20px;
+  }
+
+  .bazaButtons {
+    display: flex;
+  }
+}
+
+/* Mobile only */
+@media only screen and (max-width: 600px) {
+  .body {
+    padding: 5px;
+  }
+
+  .bazaCell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .bazaButtons {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  .bazaButton {
+    width: 60px;
+    margin: 5px;
+  }
+
+  .bazaCell > input {
+    margin-bottom: 5px;
+  }
 }
